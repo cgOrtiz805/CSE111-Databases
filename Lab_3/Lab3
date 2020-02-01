@@ -1,0 +1,140 @@
+1.
+SELECT c_name
+FROM customer
+WHERE c_name = "Customer#000000227";
+
+2.
+SELECT s_name AS name, MIN(s_acctbal) AS balance
+FROM supplier;
+
+3.
+
+SELECT l_quantity AS quantity, l_extendedprice AS extendedprice
+FROM lineitem
+WHERE l_returnflag = "N"
+AND
+l_shipdate = "1995-09-25";
+
+
+4.
+SELECT MAX(julianday(l_shipdate) - julianday(l_commitdate))
+FROM lineitem;
+
+
+5.
+SELECT MIN(c_acctbal), MAX(c_acctbal)
+FROM customer
+WHERE c_mktsegment = "BUILDING";
+
+6.
+SELECT DISTINCT n.n_name
+FROM nation n, customer c, orders o
+WHERE c.c_nationkey = n.n_nationkey
+AND
+c.c_custkey = o.o_custkey
+AND o.o_orderdate LIKE "1996-12-%";
+
+
+7.
+SELECT l.l_recieptdate, COUNT(l.l_recieptdate)
+FROM customer c, lineitem l, orders o
+WHERE o.o_orderkey = l.l_orderkey
+AND
+o.o_custkey = c.c_custkey
+AND
+c.c_name = "Customer#000000118"
+GROUP BY
+l_recieptdate;
+
+8.
+SELECT s.s_name, s.s_acctbal
+FROM supplier s, region r, nation n
+WHERE s.s_nationkey = n.n_nationkey
+AND
+r.r_regionkey = n.n_regionkey
+AND
+r.r_name = "ASIA"
+AND s.s_acctbal > 1000;
+
+9.
+
+SELECT n.n_name, COUNT(*),ROUND(AVG(s.s_acctbal),11)
+FROM nation n, supplier s
+WHERE n.n_nationkey = s.s_nationkey
+GROUP BY n.n_name
+HAVING COUNT(*) >= 5;
+
+
+10.
+SELECT SUM(o.o_totalprice)
+FROM orders o, customer c, nation n, region r
+WHERE n.n_regionkey = r.r_regionkey
+AND
+n.n_nationkey = c.c_nationkey
+AND
+o.o_custkey = c.c_custkey
+AND r.r_name = "EUROPE"
+AND
+o.o_orderdate LIKE "1996%";
+
+11.
+SELECT COUNT(DISTINCT o.o_custkey) AS Customers
+FROM lineitem l, orders o
+WHERE l.l_orderkey = o.o_orderkey
+AND
+l.l_discount >= .04;
+
+12.
+SELECT r.r_name, COUNT(DISTINCT o.o_orderkey)
+FROM customer c, orders o, region r, nation n
+WHERE o.o_custkey = c.c_custkey
+AND c.c_nationkey = n.n_nationkey
+AND r.r_regionkey = n.n_regionkey
+AND o.o_orderstatus = "F"
+GROUP BY r.r_name 
+ORDER BY COUNT(DISTINCT o.o_orderkey ) DESC;
+
+13.
+SELECT ROUND(AVG(c.c_acctbal),11)
+FROM customer c, nation n, region r
+WHERE c.c_nationkey = n.n_nationkey
+AND
+r.r_regionkey = n.n_regionkey
+AND
+r.r_name = "EUROPE"
+AND c.c_mktsegment = "MACHINERY";
+
+14.
+SELECT COUNT(o.o_orderkey)
+FROM orders o, customer c, nation n
+WHERE o.o_custkey = c.c_custkey
+AND
+c.c_nationkey = n.n_nationkey
+AND
+n.n_name = "BRAZIL"
+AND o.o_orderpriority = "1-URGENT"
+AND
+o_orderdate BETWEEN "1994-01-01" AND "1997-12-31"
+;
+
+
+15.
+SELECT n.n_name, substr(o.o_orderdate,1,4), COUNT(*)
+FROM orders o, supplier s, nation n, lineitem l
+WHERE 
+s.s_nationkey = n.n_nationkey
+AND
+l.l_orderkey = o.o_orderkey
+AND
+l.l_suppkey = s.s_suppkey
+AND 
+o.o_orderpriority = "3-MEDIUM"
+GROUP BY n.n_name, substr(o.o_orderdate,1,4);
+
+
+
+
+
+
+
+
