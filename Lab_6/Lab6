@@ -1,0 +1,252 @@
+1.
+SELECT strftime ('%m', l_shipdate),AVG(l_quantity)
+FROM lineitem
+WHERE l_shipdate LIKE "1996%"
+GROUP BY strftime ('%m', l_shipdate)
+--GROUP BY substr(l_shipdate,6,7)
+--SELECT strftime('%Y %m %d','now');
+2.
+SELECT COUNT(c_custkey)
+FROM
+    (SELECT c.c_custkey
+    FROM customer c INNER JOIN orders ON c.c_custkey = o_custkey
+    WHERE o_orderdate LIKE "1995-08%" group by c_name HAVING COUNT(*) <=2); 
+
+3.
+SELECT COUNT(p_name)
+FROM part
+WHERE
+p_name IN (SELECT p_name FROM part
+ INNER JOIN partsupp ON p_partkey = ps_partkey
+ INNER JOIN supplier ON s_suppkey = ps_suppkey
+ INNER JOIN nation ON s_nationkey = n_nationkey
+WHERE 
+n_name = "CANADA"
+
+ GROUP BY p_name HAVING COUNT(p_partkey) > 1)
+3a.
+SELECT COUNT(s_suppkey)
+FROM
+    (SELECT s.s_suppkey FROM part
+ INNER JOIN partsupp ON p_partkey = ps_partkey
+ INNER JOIN supplier s ON s.s_suppkey = ps_suppkey
+ INNER JOIN nation ON s.s_nationkey = n_nationkey
+WHERE 
+n_name = "CANADA"
+
+GROUP BY p_name HAVING COUNT(p_partkey) > 1)
+
+
+4.
+SELECT COUNT(s_suppkey)
+FROM
+    (SELECT s.s_suppkey FROM part
+ INNER JOIN partsupp ON p_partkey = ps_partkey
+ INNER JOIN supplier s ON s.s_suppkey = ps_suppkey
+ INNER JOIN nation ON s.s_nationkey = n_nationkey
+WHERE 
+n_name = "CANADA"
+
+GROUP BY s_name HAVING COUNT(p_partkey) > 4);
+
+4a. SELECT COUNT(p_name)
+FROM part
+WHERE
+p_name IN (SELECT p_name FROM part
+ INNER JOIN partsupp ON p_partkey = ps_partkey
+ INNER JOIN supplier ON s_suppkey = ps_suppkey
+ INNER JOIN nation ON s_nationkey = n_nationkey
+WHERE 
+n_name = "CANADA"
+
+ GROUP BY s_name HAVING COUNT(DISTINCT p_partkey) > 4)
+
+5.
+SELECT COUNT(DISTINCT s_suppkey)
+   FROM supplier 
+   INNER JOIN partsupp ON s_suppkey = ps_suppkey
+    INNER JOIN part ON ps_partkey = p_partkey
+    WHERE
+    
+    p_retailprice = (SELECT MIN(p.p_retailprice) FROM part p);
+
+
+6.
+SELECT s_name, c_name
+FROM
+customer c INNER JOIN orders o ON c.c_custkey = o.o_custkey
+INNER JOIN lineitem l ON l.l_orderkey = o.o_orderkey
+INNER JOIN supplier s ON s.s_suppkey = l.l_suppkey 
+WHERE 
+o.o_totalprice = (SELECT MAX(o_totalprice) FROM orders WHERE o_orderstatus = "F");
+7.
+SELECT COUNT(*)
+FROM (
+SELECT s_name
+FROM customer 
+INNER JOIN orders ON c_custkey = o_custkey
+INNER JOIN lineitem ON l_orderkey = o_orderkey
+INNER JOIN supplier ON s_suppkey = l_suppkey
+INNER JOIN nation ON c_nationkey = n_nationkey 
+WHERE
+n_name  = "GERMANY" OR n_name = "FRANCE"
+GROUP BY s_name
+HAVING COUNT(DISTINCT o_orderkey)<30);
+
+
+
+
+
+8.
+SELECT COUNT( DISTINCT o_custkey)
+FROM orders o INNER JOIN customer c ON c.c_custkey = o.o_custkey
+WHERE
+
+o_orderkey NOT IN (SELECT DISTINCT o_orderkey
+ FROM orders 
+ INNER JOIN lineitem ON o_orderkey = l_orderkey
+ INNER JOIN supplier ON l_suppkey = s_suppkey
+ INNER JOIN nation ON s_nationkey = n_nationkey
+ INNER JOIN region ON n_regionkey = r_regionkey
+ WHERE
+  r_name NOT IN('ASIA'))
+  HAVING COUNT(o_orderkey) > 1;
+  
+  8a.
+  SELECT COUNT(DISTINCT c_name)
+FROM customer 
+INNER JOIN orders ON c_custkey = o_custkey
+INNER JOIN lineitem ON l_orderkey = o_orderkey
+INNER JOIN supplier ON l_suppkey = s_suppkey
+INNER JOIN nation ON n_nationkey = s_nationkey 
+INNER JOIN region ON n_regionkey = r_regionkey
+WHERE 
+r_name = "ASIA"
+AND
+o_orderkey NOT IN (
+SELECT o_orderkey FROM 
+customer 
+INNER JOIN orders ON c_custkey = o_custkey
+INNER JOIN lineitem ON l_orderkey = o_orderkey
+INNER JOIN supplier ON l_suppkey = s_suppkey
+INNER JOIN nation ON n_nationkey = s_nationkey 
+INNER JOIN region ON n_regionkey = r_regionkey
+WHERE r_regionkey <> 2);
+
+
+9.
+
+SELECT DISTINCT p_name
+FROM customer c 
+INNER JOIN orders o ON c.c_custkey = o.o_custkey 
+INNER JOIN lineitem l ON l.l_orderkey = o.o_orderkey
+INNER JOIN part p ON l.l_partkey = p.p_partkey
+INNER JOIN nation n ON n.n_nationkey = c.c_nationkey
+INNER JOIN region r ON r.r_regionkey = n.n_regionkey
+WHERE 
+r.r_name = "AMERICA"
+AND
+p_name IN
+(SELECT DISTINCT p_name FROM
+part INNER JOIN partsupp ON p_partkey = ps_partkey
+INNER JOIN supplier ON s_suppkey = ps_suppkey
+INNER JOIN nation ON s_nationkey = n_nationkey
+INNER JOIN region ON n_regionkey = r_regionkey
+WHERE r_name = "ASIA"
+GROUP BY p_name
+HAVING COUNT(DISTINCT s_suppkey) ==4)
+ORDER BY p_name;
+
+10.
+SELECT r_name 
+FROM
+customer INNER JOIN orders on c_custkey = o_custkey 
+INNER JOIN lineitem ON l_orderkey = o_orderkey
+INNER JOIN supplier ON s_suppkey = l_suppkey
+INNER JOIN nation ON c_nationkey = n_nationkey
+INNER JOIN region ON r_regionkey = n_regionkey
+WHERE
+c_nationkey = s_nationkey
+GROUP BY r_name
+ORDER BY SUM(l_extendedprice) DESC
+LIMIT 1;
+
+10.a 
+SELECT r_name
+FROM
+customer INNER JOIN orders on c_custkey = o_custkey 
+INNER JOIN lineitem ON l_orderkey = o_orderkey
+INNER JOIN supplier ON s_suppkey = l_suppkey
+INNER JOIN nation ON s_nationkey = n_nationkey
+INNER JOIN region ON r_regionkey = n_regionkey
+WHERE n_nationkey = c_nationkey
+AND
+l_extendedprice IN
+(SELECT MAX(l_extendedprice)
+FROM
+customer INNER JOIN orders on c_custkey = o_custkey 
+INNER JOIN lineitem ON l_orderkey = o_orderkey
+INNER JOIN supplier ON s_suppkey = l_suppkey
+INNER JOIN nation ON c_nationkey = n_nationkey
+INNER JOIN region ON r_regionkey = n_regionkey
+WHERE
+c_nationkey = s_nationkey
+GROUP BY r_name
+ORDER BY SUM(l_extendedprice) DESC LIMIT 1
+);
+
+11.
+SELECT n_name
+FROM
+   customer  INNER JOIN nation ON c_nationkey = n_nationkey
+ 
+       GROUP BY n_name
+       ORDER BY COUNT(c_custkey) DESC LIMIT 2;
+ 
+    
+12.
+SELECT n_name
+FROM
+   customer INNER JOIN orders ON c_custkey = o_custkey
+  INNER JOIN nation ON c_nationkey = n_nationkey
+ 
+       GROUP BY n_name
+       ORDER BY COUNT(o_totalprice) DESC LIMIT 1;
+ 
+    
+13.
+SELECT n_name
+FROM
+supplier INNER JOIN lineitem ON s_suppkey = l_suppkey
+INNER JOIN orders ON l_orderkey = o_orderkey
+  INNER JOIN nation ON s_nationkey = n_nationkey
+ WHERE
+ l_shipdate LIKE "1996%"
+       GROUP BY n_name
+       ORDER BY SUM(l_extendedprice) DESC LIMIT 1;
+ 
+    
+14.
+SELECT supplier_nation, s_price - c_price
+FROM
+    (SELECT SUM(l_extendedprice) AS s_price, n_name AS supplier_nation
+        FROM supplier
+            INNER JOIN lineitem ON l_suppkey = s_suppkey
+            INNER JOIN orders ON o_orderkey = l_orderkey
+            INNER JOIN nation ON n_nationkey = s_nationkey
+            WHERE
+            l_shipdate LIKE "1996%"
+            GROUP BY n_name),
+            
+    (SELECT SUM(l_extendedprice) AS c_price, n_name AS customer_nation
+    FROM customer
+    INNER JOIN orders ON o_custkey = c_custkey
+    INNER JOIN lineitem ON l_orderkey = o_orderkey
+    INNER JOIN nation ON n_nationkey = c_nationkey
+            WHERE
+            l_shipdate LIKE "1996%"
+            GROUP BY n_name)
+          
+ WHERE supplier_nation = customer_nation;
+
+15.

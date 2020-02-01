@@ -1,0 +1,280 @@
+
+1.
+SELECT COUNT(DISTINCT c.c_custkey)
+FROM nation n, customer c, region r
+WHERE 
+c.c_nationkey = n.n_nationkey
+AND
+n.n_regionkey = r.r_regionkey
+AND r.r_name <> "AFRICA"
+AND r.r_name <> "EUROPE";
+
+
+2.
+SELECT ra.r_name, COUNT(sa.s_name)
+FROM nation na  INNER JOIN supplier sa ON sa.s_nationkey = na.n_nationkey INNER JOIN region ra ON ra.r_regionkey = na.n_regionkey
+WHERE ra.r_name = "AFRICA" AND
+sa.s_acctbal >= (SELECT AVG(s_acctbal) 
+FROM supplier, region, nation WHERE r_name = "AFRICA" AND s_nationkey = n_nationkey AND n_regionkey = r_regionkey)
+
+UNION ALL 
+
+SELECT rb.r_name, COUNT(sb.s_name)
+FROM  nation nb INNER JOIN supplier sb ON sb.s_nationkey = nb.n_nationkey INNER JOIN region rb ON nb.n_regionkey = rb.r_regionkey
+WHERE rb.r_name = "AMERICA" AND
+sb.s_acctbal >= (SELECT AVG(s_acctbal) FROM supplier, region, nation WHERE r_name = "AMERICA" AND s_nationkey = n_nationkey AND n_regionkey = r_regionkey)
+
+UNION ALL
+
+SELECT rc.r_name, COUNT(sc.s_name)
+FROM  nation nc INNER JOIN supplier sc ON sc.s_nationkey = nc.n_nationkey INNER JOIN region rc ON nc.n_regionkey = rc.r_regionkey
+WHERE rc.r_name = "ASIA" AND
+sc.s_acctbal >= (SELECT AVG(s_acctbal) FROM supplier, region, nation WHERE r_name = "ASIA" AND s_nationkey = n_nationkey AND n_regionkey = r_regionkey)
+
+UNION ALL
+
+SELECT rd.r_name, COUNT(sd.s_name)
+FROM  nation nd INNER JOIN supplier sd ON sd.s_nationkey = nd.n_nationkey INNER JOIN region rd ON nd.n_regionkey = rd.r_regionkey
+WHERE rd.r_name = "EUROPE" AND 
+sd.s_acctbal >= (SELECT AVG(s_acctbal) FROM supplier, region, nation WHERE r_name = "EUROPE" AND s_nationkey = n_nationkey AND n_regionkey = r_regionkey)
+
+UNION ALL
+
+SELECT re.r_name, COUNT(se.s_name)
+FROM  nation ne INNER JOIN supplier se ON se.s_nationkey = ne.n_nationkey INNER JOIN region re ON ne.n_regionkey = re.r_regionkey
+WHERE re.r_name = "MIDDLE EAST" AND
+ se.s_acctbal >= (SELECT AVG(s_acctbal) FROM supplier, region, nation WHERE r_name = "MIDDLE EAST" AND s_nationkey = n_nationkey AND n_regionkey = r_regionkey);
+
+
+
+
+2a.SELECT r_name, COUNT(s_suppkey)
+FROM nation 
+ INNER JOIN supplier ON s_nationkey = n_nationkey
+  INNER JOIN region r ON n_regionkey = r.r_regionkey
+WHERE
+
+s_acctbal > (SELECT AVG(s_acctbal) FROM nation INNER JOIN supplier ON s_nationkey = n_nationkey INNER JOIN region rr ON n_regionkey = rr.r_regionkey
+ WHERE r.r_name =rr.r_name
+GROUP BY r_name)
+GROUP BY r_name
+
+
+
+
+
+3.
+
+
+SELECT MAX(DISTINCT l.l_discount)
+FROM
+lineitem l
+WHERE
+l.l_discount <= (SELECT AVG(l_discount) FROM lineitem, orders WHERE o_orderkey = l_orderkey AND
+o_orderdate HAVING substr(o_orderdate,1,8));
+
+
+
+3a. SELECT MAX(DISTINCT l.l_discount)
+FROM lineitem l
+WHERE
+l.l_discount <= (SELECT AVG(l_discount) 
+FROM lineitem INNER JOIN orders ON o_orderkey = l_orderkey WHERE
+o_orderdate HAVING substr(o_orderdate,1,8));
+
+
+
+4.
+SELECT n.n_name, COUNT(DISTINCT c.c_custkey), COUNT(DISTINCT s.s_suppkey)
+FROM supplier s, customer c, nation n, region r
+WHERE 
+
+c.c_nationkey  = n.n_nationkey
+AND
+s.s_nationkey = n.n_nationkey
+
+AND
+r.r_regionkey = n.n_regionkey
+AND
+r.r_name = "EUROPE"
+GROUP BY n.n_name;
+
+5.
+SELECT  s.s_name , p.p_size, MIN(ps.ps_supplycost)
+FROM part p, partsupp ps, supplier s, nation n, region r
+WHERE
+p.p_type LIKE "%STEEL%"
+AND
+p.p_partkey = ps.ps_partkey
+AND
+ps.ps_suppkey = s.s_suppkey
+AND
+s.s_nationkey = n.n_nationkey 
+AND
+n.n_regionkey = r.r_regionkey
+AND
+r.r_name = "AMERICA"
+GROUP BY p.p_size
+ORDER BY s.s_name;
+5a.
+SELECT  s.s_name , p.p_size, MIN(ps.ps_supplycost)
+FROM part p 
+INNER JOIN partsupp ps ON p.p_partkey = ps.ps_partkey
+INNER JOIN supplier s ON s.s_suppkey = ps.ps_suppkey
+INNER JOIN nation n ON s.s_nationkey = n.n_nationkey
+INNER JOIN region r ON r.r_regionkey = n.n_regionkey
+WHERE
+p.p_type LIKE "%STEEL%"
+
+AND
+r.r_name = "AMERICA"
+GROUP BY p.p_size
+ORDER BY s.s_name ASC;
+
+
+
+
+
+
+6.
+SELECT DISTINCT M.p_mfgr
+FROM (SELECT p.p_mfgr, MIN(ps.ps_availqty)
+FROM supplier s 
+INNER JOIN partsupp ps ON ps.ps_suppkey = s.s_suppkey
+INNER JOIN part p ON p.p_partkey = ps.ps_partkey 
+WHERE s.s_name= "Supplier#000000053"
+HAVING MIN(ps.ps_availqty) )M;
+6a.
+SELECT DISTINCT(p.p_mfgr)
+FROM partsupp ps 
+INNER JOIN supplier s ON s.s_suppkey = ps.ps_suppkey 
+INNER JOIN part p ON p.p_partkey = ps.ps_partkey
+WHERE s.s_name = "Supplier#000000053"
+AND
+ps.ps_availqty = (SELECT MIN(ps_availqty)
+ FROM supplier
+  INNER JOIN partsupp ON s_suppkey = ps_suppkey
+  WHERE s_name = "Supplier#000000053");
+
+
+7.
+SELECT o.o_orderpriority, COUNT(o.o_orderkey)
+FROM lineitem l
+INNER JOIN orders o ON o.o_orderkey = l.l_orderkey 
+WHERE
+o.o_orderdate LIKE "1996%"
+AND
+l.l_receiptdate < l.l_commitdate
+GROUP BY o.o_orderpriority;
+
+8.
+SELECT COUNT(DISTINCT s.s_suppkey)
+
+FROM part p 
+ INNER JOIN partsupp ps ON p.p_partkey = ps.ps_partkey
+ INNER JOIN supplier s ON s.s_suppkey = ps.ps_suppkey
+ WHERE 
+ p.p_type LIKE "%MEDIUM%POLISHED%"
+ AND p.p_size IN (3,23,26,49);
+ 
+
+9.
+SELECT COUNT(ps.ps_partkey)
+FROM partsupp ps 
+INNER JOIN supplier s ON s.s_suppkey = ps.ps_suppkey 
+INNER JOIN nation n ON s.s_nationkey = n.n_nationkey
+WHERE
+n.n_name = "CANADA"
+AND ps.ps_supplycost*ps.ps_availqty  > (SELECT AVG(ps_supplycost*ps_availqty)*320/100
+ FROM partsupp 
+INNER JOIN supplier ON s_suppkey = ps_suppkey 
+INNER JOIN nation ON s_nationkey = n_nationkey
+
+WHERE n_name = "CANADA");
+
+10.
+SELECT r.r_name, COUNT(c.c_acctbal)
+FROM customer c
+LEFT JOIN orders o ON c.c_custkey = o.o_custkey
+INNER JOIN nation n ON c.c_nationkey = n.n_nationkey 
+INNER JOIN region r ON r.r_regionkey = n.n_regionkey
+WHERE
+o.o_orderkey IS NULL
+AND
+c.c_acctbal > (SELECT AVG(c_acctbal) FROM customer)
+
+GROUP BY r_name;
+
+11.
+SELECT MAX(l_extendedprice * (1-l_discount)) 
+FROM lineitem l
+WHERE
+l.l_shipdate > "1994-10-02";
+
+12.
+SELECT (SUM(ps.ps_supplycost))
+FROM partsupp ps INNER JOIN part p ON p.p_partkey = ps.ps_partkey
+
+WHERE
+
+p.p_retailprice < 1000 AND
+
+p.p_partkey IN ( SELECT l_partkey FROM lineitem INNER JOIN partsupp ON ps_suppkey = l_suppkey WHERE l_shipdate LIKE "1996%") 
+AND
+ps_suppkey NOT IN( SELECT DISTINCT ps_suppkey FROM  part INNER JOIN lineitem ON p_partkey = l_partkey INNER JOIN partsupp ON ps_suppkey = l_suppkey WHERE
+l_extendedprice < 1000 AND l_shipdate LIKE "1995%")
+;
+
+13.
+SELECT o.o_orderpriority, COUNT(DISTINCT o.o_orderkey)
+FROM lineitem l INNER JOIN orders o ON l.l_orderkey = o.o_orderkey
+WHERE o.o_orderdate BETWEEN "1996-10-01" AND "1996-12-31"
+AND
+l.l_receiptdate > l.l_commitdate
+GROUP BY o.o_orderpriority;
+
+14.
+SELECT sr.r_name, cr.r_name ,substr(l.l_shipdate,1,4), SUM(l.l_extendedprice * (1-l.l_discount)) AS gross
+FROM lineitem l 
+INNER JOIN orders o ON o.o_orderkey = l.l_orderkey
+INNER JOIN customer c ON c.c_custkey = o.o_custkey
+INNER JOIN supplier s ON s.s_suppkey = l.l_suppkey
+INNER JOIN nation sn ON sn.n_nationkey = s.s_nationkey
+INNER JOIN region sr ON sn.n_regionkey = sr.r_regionkey
+INNER JOIN nation cn ON cn.n_nationkey = c.c_nationkey
+INNER JOIN region cr ON cn.n_regionkey = cr.r_regionkey
+WHERE 
+l.l_shipdate BETWEEN "1995-01-01" AND "1996-12-31"
+GROUP BY sr.r_name, cr.r_name, substr(l.l_shipdate,1,4);
+
+ 
+15.
+SELECT SUM2/SUM1
+FROM
+(SELECT SUM(l_extendedprice * (1 - l_discount)) as SUM1
+FROM lineitem 
+INNER JOIN supplier ON s_suppkey = l_suppkey 
+INNER JOIN orders ON o_orderkey = l_orderkey 
+INNER JOIN customer ON c_custkey = o_custkey
+INNER JOIN  nation n1 ON n1.n_nationkey = c_nationkey
+INNER JOIN region ON r_regionkey = n1.n_regionkey
+INNER JOIN nation n2 ON n2.n_nationkey = s_nationkey
+WHERE 
+n2.n_name NOT IN (SELECT r_name FROM region WHERE r_name == "UNITED STATES")
+AND l_shipdate LIKE "1996%" AND
+r_name == "EUROPE")
+,
+(SELECT SUM(l_extendedprice * (1 - l_discount)) as SUM2
+FROM lineitem 
+INNER JOIN supplier ON s_suppkey = l_suppkey 
+INNER JOIN orders ON o_orderkey = l_orderkey 
+INNER JOIN customer ON c_custkey = o_custkey
+INNER JOIN  nation n1 ON n1.n_nationkey = c_nationkey
+INNER JOIN region ON r_regionkey = n1.n_regionkey
+INNER JOIN nation n2 ON n2.n_nationkey = s_nationkey
+WHERE
+l_shipdate LIKE "1996%" AND
+r_name == "EUROPE" AND
+n2.n_name == "UNITED STATES");
+
+
