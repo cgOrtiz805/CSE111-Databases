@@ -1,0 +1,90 @@
+CREATE TABLE Ability (
+    a_AbilityID INTEGER PRIMARY KEY AUTOINCREMENT,
+    a_name      VARCHAR UNIQUE,
+    a_entry     VARCHAR
+);
+
+
+CREATE TABLE Breeding (
+    b_PokeID  INTEGER PRIMARY KEY AUTOINCREMENT,
+    b_EggID   INTEGER,
+    Male      VARCHAR,
+    Female    VARCHAR,
+    Egg_cycle INTEGER
+);
+
+CREATE TABLE Condition (
+    co_ConditionID INTEGER PRIMARY KEY AUTOINCREMENT,
+    co_condition   VARCHAR UNIQUE
+);
+
+
+CREATE TABLE EggGroup (
+    eg_EggID INTEGER PRIMARY KEY AUTOINCREMENT,
+    eg_name  VARCHAR UNIQUE
+);
+
+CREATE TABLE Evolve (
+    e_PokeID      INTEGER,
+    e_EvoID       INTEGER,
+    e_name        STRING  UNIQUE,
+    e_ConditionID INTEGER,
+    Item          STRING,
+    Level         INTEGER
+);
+
+
+CREATE TABLE Habitat (
+    h_HabitatID INTEGER PRIMARY KEY AUTOINCREMENT,
+    h_name      STRING,
+    h_entry     STRING
+);
+
+
+CREATE TABLE Pokemon (
+    p_PokeID    INTEGER PRIMARY KEY ASC AUTOINCREMENT,
+    p_name      STRING  UNIQUE,
+    Height      INTEGER,
+    Weight      INTEGER,
+    p_HabitatID INTEGER,
+    p_PtypeID   INTEGER,
+    p_StypeID   INTEGER,
+    p_SpeciesID INTEGER,
+    p_AbilityID INTEGER,
+    p_entry     STRING
+);
+
+CREATE TABLE PrimaryType (
+    pt_PtypeID INTEGER PRIMARY KEY AUTOINCREMENT,
+    pt_type    VARCHAR UNIQUE
+);
+
+
+CREATE TABLE SecondaryType (
+    st_StypeID DECIMAL PRIMARY KEY,
+    st_type    VARCHAR UNIQUE
+);
+
+
+CREATE TABLE Species (
+    s_SpeciesID INTEGER PRIMARY KEY AUTOINCREMENT,
+    s_name      VARCHAR UNIQUE
+);
+
+
+CREATE TABLE Stats (
+    st_PokeID INTEGER PRIMARY KEY AUTOINCREMENT
+                      UNIQUE,
+    HP        INTEGER,
+    Attack    INTEGER,
+    Defense   INTEGER,
+    SP_Atk    DECIMAL,
+    SP_Def    INTEGER,
+    Speed     INTEGER
+);
+
+
+
+
+
+

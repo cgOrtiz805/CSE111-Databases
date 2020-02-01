@@ -1,0 +1,63 @@
+1|Overgrow|Powers up Grass-type moves when the Pokémon’s HP is low
+2|Chlorophyll|Boosts the Pokémon’s Speed stat in harsh sunlight
+3|Swift Swim|Boosts the Pokémon's Speed in rain
+4|Levitate|Gives immunity to Ground type moves
+5|Sturdy|It cannot be knocked out with one hit
+6|Blaze|Powers up Fire-type moves when the Pokémon’s HP is low
+7|Torrent|Powers up Water-type moves in a pinch
+8|Swarm|Powers up Bug-type moves in a pinch
+9|Pickup|The Pokémon may pick up items
+10|Run Away|Enables a sure getaway from wild Pokémon
+11|Pressure|The Pokémon raises the foe's PP usage
+12|Intimidate|Lowers the foe's Attack stat
+13|Inner Focus|The Pokémon is protected from flinching
+14|Keen Eye|Prevents other Pokémon from lowering accuracy
+15|Lightning Rod|Draws in all Electric-type moves to up Sp. Attack
+16|Hustle|Boosts the Attack stat, but lowers accuracy
+17|Insomnia|Prevents the Pokémon from falling asleep
+18|Rock Head|Protects the Pokémon from recoil damage
+19|Guts|Boosts Attack if there is a status problem
+20|Own Tempo|Prevents the Pokémon from becoming confused
+21|Water Absorb|Restores HP if hit by a Water-type move
+22|Oblivious|Prevents it from becoming infatuated
+23|Sand Veil|Boosts the Pokémon's evasion in a sandstorm
+24|Shell Armor|The Pokémon is protected against critical hits
+25|Thick Fat|Ups resistance to Fire- and Ice-type moves
+26|Early Bird|The Pokémon awakens quickly from sleep
+27|Soundproof|Gives immunity to sound-based moves
+28|Static|Contact with the Pokémon may cause paralysis
+29|Synchronize|Passes a burn, poison, or paralysis to the foe
+30|Flame Body|Contact with the Pokémon may burn the attacker
+31|Natural Cure|All status problems heal when it switches out.
+32|Poison Point|Contact with the Pokémon may poison the attacker
+33|Shed Skin|The Pokémon may heal its own status problems
+34|Flash Fire|It powers up Fire-type moves if it's hit by one.
+35|Damp|Prevents the use of self-destructing moves
+36|Shield Dust|Blocks the added effects of attacks taken.
+37|Hyper Cutter|Prevents other Pokémon from lowering Attack stat.
+38|Water Veil|Prevents the Pokémon from getting a burn.
+39|Limber|The Pokémon is protected from paralysis.
+40|Speed Boost|Its Speed stat is gradually boosted.
+41|Clear Body|Prevents other Pokémon from lowering its stats.
+42|Rain Dish|The Pokémon gradually regains HP in rain.
+43|Serene Grace|Boosts the likelihood of added effects appearing.
+44|Cute Charm|Contact with the Pokémon may cause infatuation.
+45|Vital Spirit|Prevents the Pokémon from falling asleep.
+46|Cloud Nine|Eliminates the effects of weather.
+47|Stench|The stench may cause the target to flinch.
+48|Volt Absorb|Restores HP if hit by an Electric-type move.
+49|Illuminate|Raises the likelihood of meeting wild Pokémon.
+50|Plus|Ups Sp. Atk if another Pokémon has Plus or Minus.
+51|Sticky Hold|Protects the Pokémon from item theft.
+52|Battle Armor|The Pokémon is protected against critical hits.
+53|Compound Eyes|The Pokémon's accuracy is boosted.
+54|Effect Spore|Contact may poison or cause paralysis or sleep.
+55|Magnet Pull|Prevents Steel-type Pokémon from escaping.
+56|Arena Trap|Prevents the foe from fleeing.
+57|Immunity|Prevents the Pokémon from getting poisoned.
+58|Marvel Scale|The Pokémon’s marvelous scales boost the Defense stat if it has a status condition.
+59|Forecast|Castform transforms with the weather.
+60|Liquid Ooze|Damages attackers using any draining move.
+61|Drought|Turns the sunlight harsh when the Pokémon enters a battle.
+62|Trace|The Pokémon copies a foe's Ability.
+63|Imposter|The Pokémon transforms itself into the Pokémon it’s facing.
