@@ -1,0 +1,97 @@
+Cristian Ortiz
+Lab 08
+CSE 111: Databases
+
+
+3)
+
+insert into customer index:Query finished in 0.072 second(s)
+
+insert into customer noindex:Query finished in 0.036 second(s)
+
+insert into supplier index:Query finished in 0.045 second(s)
+
+insert into supplier noindex:Query finished in 0.026 second(s)
+
+insert into lineitem index:Query finished in 0.927 second(s)
+
+insert into lineitem noindex:Query finished in 0.333 second(s)
+
+insert into orders index: Query finished in 0.187 second(s)
+
+insert into orders noindex: Query finished in 0.090 second(s)
+
+-Inserting had a longer execution time for index than noindex
+
+4)
+
+create customer mktsegment index:Query finished in 0.028 second(s)
+
+create lineitem returnflag index:Query finished in 0.355 second(s)
+
+create orders priority index:Query finished in 0.070 second(s).
+
+-Creating the index results in a ok execution time
+
+5)
+INDEX
+1.Query finished in 0.004 second(s). faster
+2.Query finished in 0.002 second(s). faster
+3.Query finished in 0.005 second(s). faster
+4.Query finished in 0.125 second(s).
+5.Query finished in 0.006 second(s).
+6.Query finished in 0.004 second(s). faster
+7.Query finished in 0.249 second(s).
+8.Query finished in 0.002 second(s). faster
+9.Query finished in 0.003 second(s). no difference
+10.Query finished in 0.082 second(s).
+11.Query finished in 0.486 second(s).
+12.Query finished in 0.059 second(s).
+13.Query finished in 0.004 second(s). slight faster
+14.Query finished in 0.015 second(s). no differece
+15.Query finished in 0.218 second(s). faster
+
+NOINDEX
+1.Query finished in 0.005 second(s).
+2.Query finished in 0.003 second(s).
+3.Query finished in 0.010 second(s).
+4.Query finished in 0.124 second(s). slightly faster
+5.Query finished in 0.003 second(s). slightly faster
+6.Query finished in 0.019 second(s).
+7.Query finished in 0.244 second(s). slightly faster
+8.Query finished in 0.005 second(s).
+9. Query finished in 0.003 second(s). no differece
+10.Query finished in 0.059 second(s). faster
+11.Query finished in 0.172 second(s). faster
+12.Query finished in 0.048 second(s).faster
+13.Query finished in 0.005 second(s).
+14.Query finished in 0.015 second(s). no differece
+15.Query finished in 0.244 second(s).
+
+-It seems that queries with a index had a faster execution time than without b/c indexes do not search the whole db table.
+
+6)
+Update lineitem_index:Query finished in 1.556 second(s).
+
+Update lineitem_noindex: Query finished in 0.832 second(s).
+
+-Updating a table with a index took longer 
+
+7)
+Update supplier_index:Query finished in 0.026 second(s).
+
+Update supplier_noindex:Query finished in 0.013 second(s).
+
+-Updating a table with a index took longer 
+
+
+From my observation I can conlude that Indexes are great for increasing the performance and speed of 
+queries by reducing the amount of data it scans. However for other processes such as Inserting,
+Updating, and possibly Creating the indexed tables took longer the execute. 
+
+
+
+
+
+
+
